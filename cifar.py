@@ -48,6 +48,7 @@ def main(batch_size, baseline, reduction, data_path, checkpoint_path, lr, checkp
         ckpt_dir = checkpoint_path / checkpoint_name
         model.load_state_dict(torch.load(ckpt_dir)["weight"])
         print("checkpoint load successfully!")
+    trainer.max_acc = max(trainer.test(test_loader),trainer.max_acc)
     trainer.loop(200, train_loader, test_loader, scheduler)
 
 if __name__ == '__main__':
