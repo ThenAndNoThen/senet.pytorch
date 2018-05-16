@@ -21,7 +21,7 @@ def get_dataloader(batch_size, root="~/.torch/data/cifar10"):
                          transforms.RandomHorizontalFlip()]
 
     train_loader = DataLoader(
-            datasets.CIFAR10(root, train=True, download=True,
+            datasets.CIFAR10(root, train=True, download=False,
                              transform=transforms.Compose(data_augmentation + to_normalized_tensor)),
             batch_size=batch_size, shuffle=True)
     test_loader = DataLoader(
@@ -30,8 +30,8 @@ def get_dataloader(batch_size, root="~/.torch/data/cifar10"):
     return train_loader, test_loader
 
 
-def main(batch_size, baseline, reduction):
-    train_loader, test_loader = get_dataloader(batch_size)
+def main(batch_size, baseline, reduction, data_path):
+    train_loader, test_loader = get_dataloader(batch_size,data_path)
 
     if baseline:
         model = resnet20()
@@ -51,5 +51,6 @@ if __name__ == '__main__':
     p.add_argument("--batchsize", type=int, default=64)
     p.add_argument("--reduction", type=int, default=16)
     p.add_argument("--baseline", action="store_true")
+    p.add_argument("--data_path", type=str, default="./data")
     args = p.parse_args()
-    main(args.batchsize, args.baseline, args.reduction)
+    main(args.batchsize, args.baseline, args.reduction, args.data_path)
