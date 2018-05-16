@@ -32,6 +32,7 @@ def get_dataloader(batch_size, root="~/.torch/data/cifar10"):
 
 
 def main(batch_size, baseline, reduction, data_path, checkpoint_path, lr, checkpoint_name=None):
+    checkpoint_path = Path(checkpoint_path)
     train_loader, test_loader = get_dataloader(batch_size,data_path)
 
     if baseline:
@@ -44,7 +45,8 @@ def main(batch_size, baseline, reduction, data_path, checkpoint_path, lr, checkp
     trainer = Trainer(model, optimizer, F.cross_entropy, save_dir=checkpoint_path)
     # 加载模型参数
     if checkpoint_name!=None:
-        model.load_state_dict(torch.load(checkpoint_name)["weight"])
+        ckpt_dir = checkpoint_path / checkpoint_name
+        model.load_state_dict(torch.load(ckpt_dir)["weight"])
     trainer.loop(200, train_loader, test_loader, scheduler)
 
 if __name__ == '__main__':
