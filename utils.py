@@ -45,6 +45,7 @@ class Trainer(object):
     def test(self, data_loader):
         self.model.eval()
         loss, correct = self._loop(data_loader, is_train=False)
+        return sum(correct)
 
     def loop(self, epochs, train_data, test_data, scheduler=None):
         for ep in range(1, epochs + 1):
@@ -52,9 +53,12 @@ class Trainer(object):
                 scheduler.step()
             print("epochs: {}".format(ep))
             self.train(train_data)
-            self.test(test_data)
-            if ep % self.save_freq:
+            acc = self.test(test_data)
+            if acc > 0.85:
                 self.save(ep)
+                print("checkpoint saved successfully!")
+            # if ep % self.save_freq:
+            #     self.save(ep)
 
     def save(self, epoch, **kwargs):
         if self.save_dir is not None:

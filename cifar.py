@@ -30,7 +30,7 @@ def get_dataloader(batch_size, root="~/.torch/data/cifar10"):
     return train_loader, test_loader
 
 
-def main(batch_size, baseline, reduction, data_path):
+def main(batch_size, baseline, reduction, data_path, checkpoint_path):
     train_loader, test_loader = get_dataloader(batch_size,data_path)
 
     if baseline:
@@ -40,17 +40,17 @@ def main(batch_size, baseline, reduction, data_path):
     optimizer = optim.SGD(params=model.parameters(), lr=1e-1, momentum=0.9,
                           weight_decay=1e-4)
     scheduler = StepLR(optimizer, 80, 0.1)
-    trainer = Trainer(model, optimizer, F.cross_entropy)
+    trainer = Trainer(model, optimizer, F.cross_entropy, save_dir=checkpoint_path)
     trainer.loop(200, train_loader, test_loader, scheduler)
-
 
 if __name__ == '__main__':
     import argparse
 
     p = argparse.ArgumentParser()
     p.add_argument("--batchsize", type=int, default=64)
-    p.add_argument("--reduction", type=int, default=16)
+    p.add_argument("--reduction", type=int, default=8)
     p.add_argument("--baseline", action="store_true")
     p.add_argument("--data_path", type=str, default="./data")
+    p.add_argument("--checkpoint_path", type=str, default="./checkpoint")
     args = p.parse_args()
-    main(args.batchsize, args.baseline, args.reduction, args.data_path)
+    main(args.batchsize, args.baseline, args.reduction, args.data_path, args.checkpoint_path)
