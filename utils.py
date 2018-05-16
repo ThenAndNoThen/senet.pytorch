@@ -18,6 +18,7 @@ class Trainer(object):
         self.loss_f = loss_f
         self.save_dir = save_dir
         self.save_freq = save_freq
+        self.max_acc = 0.85
 
     def _loop(self, data_loader, is_train=True):
         loop_loss = []
@@ -54,8 +55,9 @@ class Trainer(object):
             print("epochs: {}".format(ep))
             self.train(train_data)
             acc = self.test(test_data)
-            if acc > 0.85:
+            if acc > self.max_acc:
                 self.save(ep)
+                self.max_acc = acc
                 print("checkpoint saved successfully!")
             # if ep % self.save_freq:
             #     self.save(ep)

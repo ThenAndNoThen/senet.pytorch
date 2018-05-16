@@ -47,6 +47,7 @@ def main(batch_size, baseline, reduction, data_path, checkpoint_path, lr, checkp
         checkpoint_path = Path(checkpoint_path)
         ckpt_dir = checkpoint_path / checkpoint_name
         model.load_state_dict(torch.load(ckpt_dir)["weight"])
+        print("checkpoint load successfully!")
     trainer.loop(200, train_loader, test_loader, scheduler)
 
 if __name__ == '__main__':
