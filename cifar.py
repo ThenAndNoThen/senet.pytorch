@@ -1,4 +1,5 @@
 from pathlib import Path
+import torch
 import torch.nn.functional as F
 import torch.optim as optim
 from torch.utils.data import DataLoader
@@ -30,7 +31,7 @@ def get_dataloader(batch_size, root="~/.torch/data/cifar10"):
     return train_loader, test_loader
 
 
-def main(batch_size, baseline, reduction, data_path, checkpoint_path, lr):
+def main(batch_size, baseline, reduction, data_path, checkpoint_path, lr, checkpoint_name=None):
     train_loader, test_loader = get_dataloader(batch_size,data_path)
 
     if baseline:
@@ -41,6 +42,9 @@ def main(batch_size, baseline, reduction, data_path, checkpoint_path, lr):
                           weight_decay=1e-4)
     scheduler = StepLR(optimizer, 80, 0.1)
     trainer = Trainer(model, optimizer, F.cross_entropy, save_dir=checkpoint_path)
+    # 加载模型参数
+    if checkpoint_name!=None:
+        model.load_state_dict(torch.load(checkpoint_name)["weight"])
     trainer.loop(200, train_loader, test_loader, scheduler)
 
 if __name__ == '__main__':
@@ -53,5 +57,6 @@ if __name__ == '__main__':
     p.add_argument("--data_path", type=str, default="./data")
     p.add_argument("--checkpoint_path", type=str, default="./checkpoint")
     p.add_argument("--lr", type=float, default=0.1)
+    p.add_argument("--checkpoint_name", type=str, default=None)
     args = p.parse_args()
-    main(args.batchsize, args.baseline, args.reduction, args.data_path, args.checkpoint_path, args.lr)
+    main(args.batchsize, args.baseline, args.reduction, args.data_path, args.checkpoint_path, args.lr, args.checkpoint_name)

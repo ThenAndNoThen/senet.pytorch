@@ -18,8 +18,9 @@ For SE-Inception-v3, the input size is required to be 299x299 [as original Incep
 
 ### SE-ResNet20/Cifar10
 
-```
-python cifar.py [--baseline]
+```shell
+选择GPU：CUDA_VISIBLE_DEVICES="2"
+python3 senet.pytorch/cifar.py --reduction=8 --checkpoint_path=checkpoint/cifar-se-resnet20 --lr=0.1
 ```
 
 |                  | ResNet20       | SE-ResNet20 (reduction 4 or 8)    |
