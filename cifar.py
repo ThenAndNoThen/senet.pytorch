@@ -41,6 +41,8 @@ def main(batch_size, baseline, reduction, data_path, checkpoint_path, lr, checkp
     optimizer = optim.SGD(params=model.parameters(), lr=lr, momentum=0.9,
                           weight_decay=1e-4)
     scheduler = StepLR(optimizer, 80, 0.1)
+    dict = model.state_dict()
+    print(dict.keys())
     trainer = Trainer(model, optimizer, F.cross_entropy, save_dir=checkpoint_path)
     # 加载模型参数
     if checkpoint_name!=None:
